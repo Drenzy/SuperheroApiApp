@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        Log.d("onCreate: ", "start");
         // Assuming you have an ApiService instance
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
 
@@ -32,7 +32,8 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("Superhero", superhero.getName());
                         Log.d("Superhero", superhero.getSecretIdentity());
                         Log.d("Superhero", superhero.getBrand());
-                        Log.d("Superhero", new String(String.valueOf(superhero.getAge())));
+                       // Log.d("Superhero", new String(String.valueOf(superhero.getAge())));
+                        Log.d("Superhero", "" + superhero.getAge());
                     }
                 } else {
                     // Handle error response
