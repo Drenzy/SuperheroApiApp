@@ -1,21 +1,37 @@
 package com.example.superheroapp;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.ArrayList;
 import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
+    private List<Superhero> superheroes;
+    private SuperheroAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.d("onCreate: ", "start");
+
+        ListView listView = findViewById(R.id.listView); // Replace with your ListView ID
+        superheroes = new ArrayList<>();
+        adapter = new SuperheroAdapter(this, R.layout.list_item_superhero, superheroes);
+        listView.setAdapter(adapter);
+
         // Assuming you have an ApiService instance
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
 
@@ -26,15 +42,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<Superhero>> call, Response<List<Superhero>> response) {
                 if (response.isSuccessful()) {
-                    List<Superhero> superheroes = response.body();
-                    // Process the list of superheroes, e.g., update UI
-                    for (Superhero superhero : superheroes) {
-                        Log.d("Superhero", superhero.getName());
-                        Log.d("Superhero", superhero.getSecretIdentity());
-                        Log.d("Superhero", superhero.getBrand());
-                       // Log.d("Superhero", new String(String.valueOf(superhero.getAge())));
-                        Log.d("Superhero", "" + superhero.getAge());
-                    }
+                    superheroes.addAll(response.body());
+                    adapter.notifyDataSetChanged();
                 } else {
                     // Handle error response
                     Log.e("API Response", "Error: " + response.code() + ", " + response.message());
