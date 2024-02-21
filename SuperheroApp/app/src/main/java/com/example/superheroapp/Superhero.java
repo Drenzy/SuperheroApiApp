@@ -37,4 +37,20 @@ public class Superhero {
     public String getSecretIdentity() {
         return secretIdentity;
     }
+
+    public String setName(String name) {
+        return name;
+    }
+
+    public String setBrand(String brand) {
+        return brand;
+    }
+
+    public int setAge(int age) {
+        return age;
+    }
+
+    public String setSecretIdentity(String secretIdentity) {
+        return secretIdentity;
+    }
 }

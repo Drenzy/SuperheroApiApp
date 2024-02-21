@@ -6,7 +6,50 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <ListView
+
+
+    <!-- Add superhero form -->
+    <LinearLayout
+        android:id="@+id/addSuperheroForm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:padding="16dp"
+        android:background="@android:color/darker_gray">
+
+        <EditText
+            android:id="@+id/editTextName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Superhero Name"/>
+
+        <EditText
+            android:id="@+id/editTextBrand"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Brand"/>
+
+        <EditText
+            android:id="@+id/editTextAge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:hint="Age"/>
+
+        <EditText
+            android:id="@+id/editTextSecretIdentity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Secret Identity"/>
+
+        <Button
+            android:id="@+id/buttonAddSuperhero"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Superhero"/>
+
+        <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -15,5 +58,6 @@
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
         android:clipToPadding="false"/>
+    </LinearLayout>
 
 </RelativeLayout>

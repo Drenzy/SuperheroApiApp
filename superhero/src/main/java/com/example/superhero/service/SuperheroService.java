@@ -22,14 +22,16 @@ public class SuperheroService {
     public Superhero getSuperheroById(int id) {
         return superheroRepository.findById(id).get();
     }
+
     public void createSuperhero(Superhero superhero) {
         superheroRepository.save(superhero);
     }
+
     public void deleteSuperheroByid(int id) {
         superheroRepository.deleteById(id);
     }
 
-    public void updateSuperheroById(int id, Superhero superhero){
+    public void updateSuperheroById(int id, Superhero superhero) {
         Superhero updsuperhero = new Superhero();
 
         updsuperhero.setName(superhero.getName());
