@@ -27,12 +27,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ListView listView = findViewById(R.id.listView); // Replace with your ListView ID
+        ListView listView = findViewById(R.id.listView);
         superheroes = new ArrayList<>();
         adapter = new SuperheroAdapter(this, R.layout.list_item_superhero, superheroes);
         listView.setAdapter(adapter);
 
-        // Assuming you have an ApiService instance
+
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
 
         // Making the API request to get all superheroes
