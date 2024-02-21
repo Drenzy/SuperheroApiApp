@@ -38,19 +38,19 @@ public class Superhero {
         return secretIdentity;
     }
 
-    public String setName(String name) {
-        return name;
+    public void setName(String name) {
+        this.name=name;
     }
 
-    public String setBrand(String brand) {
-        return brand;
+    public void setBrand(String brand) {
+        this.brand=brand;
     }
 
-    public int setAge(int age) {
-        return age;
+    public void setAge(int age) {
+        this.age=age;
     }
 
-    public String setSecretIdentity(String secretIdentity) {
-        return secretIdentity;
+    public void setSecretIdentity(String secretIdentity) {
+        this.secretIdentity=secretIdentity;
     }
 }
