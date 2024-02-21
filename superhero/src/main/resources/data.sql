@@ -1,0 +1,1 @@
+insert into SUPERHERO (Name,Secret_identity,Age,brand ) values ('Spider-man','Peter Parker', 20,0)
