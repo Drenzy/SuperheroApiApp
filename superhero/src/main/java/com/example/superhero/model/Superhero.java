@@ -19,7 +19,7 @@ public class Superhero {
     @Column(nullable = false)
     private Brand brand;
 
-    enum Brand {
+    public enum Brand {
         Marvel, DC, Image_Comics, Dark_Horse;
     }
 
