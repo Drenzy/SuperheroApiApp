@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/superheroes")
@@ -22,6 +23,13 @@ public class SuperheroController {
     Superhero getSuperheroById(@PathVariable int id) {
         return superheroService.getSuperheroById(id);
     }
+
+    @GetMapping("/brands")
+    public List<Superhero.Brand> getAllBrands() {
+        return superheroService.getAllBrands();
+    }
+
+
 
     @DeleteMapping("/{id}")
     void deleteSuperheroById(@PathVariable int id) {

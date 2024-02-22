@@ -1,16 +1,20 @@
 package com.example.superheroapp;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import retrofit2.Call;
@@ -20,6 +24,7 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
     private List<Superhero> superheroes;
     private SuperheroAdapter adapter;
+    private Spinner spinnerBrand;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
                 addNewSuperhero();
             }
         });
+
+        spinnerBrand = findViewById(R.id.spinnerBrand);
     }
 
     private void fetchSuperheroes() {
@@ -56,22 +63,13 @@ public class MainActivity extends AppCompatActivity {
                     superheroes.clear(); // Clear the existing list
                     superheroes.addAll(response.body());
                     adapter.notifyDataSetChanged();
+
+                    // Populate spinner with brands
+                    populateSpinnerWithBrands();
                 } else {
                     // Handle error response
                     Log.e("API Response", "Error: " + response.code() + ", " + response.message());
-
-                    // Log additional details from the response body
-                    try {
-                        String errorBody = response.errorBody().string();
-                        Log.e("API Response", "Error Body: " + errorBody);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                    // Display a message to the user indicating the error
-                    showToast("Error fetching superheroes. Please try again.");
-
-                    // You may also consider adding a retry mechanism or other error handling strategies here
+                    //...
                 }
             }
 
@@ -80,34 +78,62 @@ public class MainActivity extends AppCompatActivity {
                 // Handle failure
                 Log.e("API Response", "Failed to make API call", t);
 
-                // Display a message to the user indicating the error
-                showToast("Failed to fetch superheroes. Please check your internet connection and try again.");
+                // You may also consider adding a retry mechanism or other error handling strategies here
+            }
+        });
+    }
+
+
+    private void populateSpinnerWithBrands() {
+        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+
+        Call<List<String>> call = apiService.getAllBrands();
+
+        call.enqueue(new Callback<List<String>>() {
+            @Override
+            public void onResponse(Call<List<String>> call, Response<List<String>> response) {
+                if (response.isSuccessful()) {
+                    List<String> brands = response.body();
+                    ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_spinner_item, brands);
+                    spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spinnerBrand.setAdapter(spinnerAdapter);
+                } else {
+                    // Handle error response
+                    Log.e("API Response", "Error: " + response.code() + ", " + response.message());
+                    //...
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<String>> call, Throwable t) {
+                // Handle failure
+                Log.e("API Response", "Failed to make API call", t);
 
                 // You may also consider adding a retry mechanism or other error handling strategies here
             }
         });
     }
 
+
+
+
+
     private void addNewSuperhero() {
         EditText editTextName = findViewById(R.id.editTextName);
-        EditText editTextBrand = findViewById(R.id.editTextBrand);
         EditText editTextAge = findViewById(R.id.editTextAge);
         EditText editTextSecretIdentity = findViewById(R.id.editTextSecretIdentity);
 
-        // Retrieve data from EditText fields
         String name = editTextName.getText().toString();
-        String brand = editTextBrand.getText().toString();
+        String brand = spinnerBrand.getSelectedItem().toString(); // Get selected brand from spinner
         int age = Integer.parseInt(editTextAge.getText().toString());
         String secretIdentity = editTextSecretIdentity.getText().toString();
 
-        // Create a new superhero object
         Superhero newSuperhero = new Superhero();
         newSuperhero.setName(name);
         newSuperhero.setBrand(brand);
         newSuperhero.setAge(age);
         newSuperhero.setSecretIdentity(secretIdentity);
 
-        // Upload the new superhero
         uploadNewSuperhero(newSuperhero);
     }
 
@@ -124,9 +150,6 @@ public class MainActivity extends AppCompatActivity {
                     // Handle successful upload
                     Log.d("API Response", "Superhero uploaded successfully");
 
-                    // Clear input fields
-                    clearInputFields();
-
                     // Refresh the superhero list
                     fetchSuperheroes();
                 } else {
@@ -140,9 +163,6 @@ public class MainActivity extends AppCompatActivity {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-
-                    // Display a message to the user indicating the error
-                    showToast("Error adding superhero. Please try again.");
                 }
             }
 
@@ -151,24 +171,9 @@ public class MainActivity extends AppCompatActivity {
                 // Handle failure
                 Log.e("API Response", "Failed to make API call", t);
 
-                // Display a message to the user indicating the error
-                showToast("Failed to add superhero. Please check your internet connection and try again.");
             }
         });
-    }
 
-    private void clearInputFields() {
-        EditText editTextName = findViewById(R.id.editTextName);
-        EditText editTextBrand = findViewById(R.id.editTextBrand);
-        EditText editTextAge = findViewById(R.id.editTextAge);
-        EditText editTextSecretIdentity = findViewById(R.id.editTextSecretIdentity);
 
-        editTextName.setText("");
-        editTextBrand.setText("");
-        editTextAge.setText("");
-        editTextSecretIdentity.setText("");
-    }
-    private void showToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

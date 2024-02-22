@@ -16,6 +16,9 @@ public interface ApiService {
     @GET("/api/superheroes")
     Call<List<Superhero>> getAllSuperheros();
 
+    @GET("/api/superheroes/brands")
+    Call<List<String>> getAllBrands();
+
     @POST("/api/superheroes")
     Call<Void> uploadSuperhero(@Body Superhero superhero);
 
