@@ -2,6 +2,7 @@ package com.example.superheroapp;
 
 import com.google.gson.annotations.SerializedName;
 
+// Model class representing a Superhero with fields annotated for Gson serialization
 public class Superhero {
     @SerializedName("id")
     private int id;
@@ -18,6 +19,8 @@ public class Superhero {
     @SerializedName("secret_identity")
     private String secretIdentity;
 
+
+    // Getter methods to retrieve values of private fields
     public int getId() {
         return id;
     }
@@ -38,6 +41,7 @@ public class Superhero {
         return secretIdentity;
     }
 
+    // Setter methods to update values of private fields
     public void setName(String name) {
         this.name=name;
     }
