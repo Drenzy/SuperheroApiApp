@@ -11,8 +11,8 @@
         android:layout_height="wrap_content"
         android:hint="Superhero Name"/>
 
-    <EditText
-        android:id="@+id/editTextEditBrand"
+    <Spinner
+        android:id="@+id/spinnerBrand"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Brand"/>

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -75,19 +76,21 @@ public class SuperheroAdapter extends ArrayAdapter<Superhero> {
         builder.setView(viewInflated);
 
         EditText editName = viewInflated.findViewById(R.id.editTextEditName);
-        EditText editBrand = viewInflated.findViewById(R.id.editTextEditBrand);
+        Spinner spinnerBrand = viewInflated.findViewById(R.id.spinnerBrand); // Change to spinner
         EditText editAge = viewInflated.findViewById(R.id.editTextEditAge);
         EditText editSecretIdentity = viewInflated.findViewById(R.id.editTextEditSecretIdentity);
 
         // Set initial values in the dialog
         editName.setText(superhero.getName());
-        editBrand.setText(superhero.getBrand());
         editAge.setText(String.valueOf(superhero.getAge()));
         editSecretIdentity.setText(superhero.getSecretIdentity());
 
+        // Populate the spinner with brands
+        populateSpinnerWithBrands(spinnerBrand, superhero.getBrand());
+
         builder.setPositiveButton("Save Changes", (dialogInterface, i) -> {
             String editedName = editName.getText().toString();
-            String editedBrand = editBrand.getText().toString();
+            String editedBrand = spinnerBrand.getSelectedItem().toString(); // Get selected brand from spinner
             int editedAge = Integer.parseInt(editAge.getText().toString());
             String editedSecretIdentity = editSecretIdentity.getText().toString();
 
@@ -105,7 +108,6 @@ public class SuperheroAdapter extends ArrayAdapter<Superhero> {
                 dialogInterface.dismiss();
             }
         });
-
 
         builder.show();
     }
@@ -192,5 +194,42 @@ public class SuperheroAdapter extends ArrayAdapter<Superhero> {
 
     private void showToast(String message) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void populateSpinnerWithBrands(Spinner spinner, String selectedBrand) {
+        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+
+        Call<List<String>> call = apiService.getAllBrands();
+
+        call.enqueue(new Callback<List<String>>() {
+            @Override
+            public void onResponse(Call<List<String>> call, Response<List<String>> response) {
+                if (response.isSuccessful()) {
+                    List<String> brands = response.body();
+                    ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, brands);
+                    spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spinner.setAdapter(spinnerAdapter);
+
+                    // Select the previously selected brand
+                    if (selectedBrand != null) {
+                        int position = brands.indexOf(selectedBrand);
+                        if (position != -1) {
+                            spinner.setSelection(position);
+                        }
+                    }
+                } else {
+                    // Handle error response
+                    Log.e("API Response", "Error: " + response.code() + ", " + response.message());
+                    //...
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<String>> call, Throwable t) {
+                // Handle failure
+                Log.e("API Response", "Failed to make API call", t);
+                //...
+            }
+        });
     }
 }
