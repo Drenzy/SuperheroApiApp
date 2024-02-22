@@ -7,22 +7,34 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Entity
 @Table
 public class Superhero {
+
+    // Primary key for the Superhero entity, automatically generated using IDENTITY strategy
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private int id;
+
+    // Superhero's name, mapped to a non-nullable column in the database
     @Column(nullable = false)
     private String Name;
+
+    // Superhero's secret identity, mapped to a non-nullable column in the database
     @Column(nullable = false)
     private String Secret_identity;
+
+    // Superhero's age, mapped to a non-nullable column in the database
     @Column(nullable = false)
     private int Age;
+
+    // Superhero's brand, an enum representing different comic book publishers
     @Column(nullable = false)
     private Brand brand;
 
+    // Enum representing different superhero brands or comic book publishers
     public enum Brand {
         Marvel, DC, Image_Comics, Dark_Horse;
     }
 
+    // Getter and setter methods for the Superhero class properties
     public int getId() {
         return id;
     }
