@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/superheros")
+@RequestMapping("/api/superheroes")
 public class SuperheroController {
     @Autowired
     SuperheroService superheroService;

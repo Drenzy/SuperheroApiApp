@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true"
         android:padding="16dp"
         android:background="@android:color/darker_gray">
 
@@ -52,8 +52,8 @@
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/addSuperheroForm"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/addSuperheroForm"
         android:divider="@android:color/transparent"
         android:dividerHeight="8dp"
         android:paddingTop="16dp"

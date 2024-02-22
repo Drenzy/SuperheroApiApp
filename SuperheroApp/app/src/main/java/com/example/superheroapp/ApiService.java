@@ -13,15 +13,15 @@ import retrofit2.http.Path;
 import java.util.List;
 
 public interface ApiService {
-    @GET("/api/superheros")
+    @GET("/api/superheroes")
     Call<List<Superhero>> getAllSuperheros();
 
-    @POST("/api/superheros")
+    @POST("/api/superheroes")
     Call<Void> uploadSuperhero(@Body Superhero superhero);
 
-    @PUT("/api/superheros/{id}")
+    @PUT("/api/superheroes/{id}")
     Call<Void> updateSuperhero(@Path("id") int superheroId, @Body Superhero superhero);
 
-    @DELETE("/api/superheros/{id}")
+    @DELETE("/api/superheroes/{id}")
     Call<Void> deleteSuperhero(@Path("id") int superheroId);
 }
