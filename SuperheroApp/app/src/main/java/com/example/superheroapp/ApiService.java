@@ -7,6 +7,7 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.DELETE;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 import java.util.List;
@@ -17,6 +18,9 @@ public interface ApiService {
 
     @POST("/api/superheros")
     Call<Void> uploadSuperhero(@Body Superhero superhero);
+
+    @PUT("/api/superheros/{id}")
+    Call<Void> updateSuperhero(@Path("id") int superheroId, @Body Superhero superhero);
 
     @DELETE("/api/superheros/{id}")
     Call<Void> deleteSuperhero(@Path("id") int superheroId);

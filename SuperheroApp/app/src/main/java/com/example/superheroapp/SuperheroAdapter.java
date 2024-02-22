@@ -1,17 +1,20 @@
 package com.example.superheroapp;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 
 import com.example.superheroapp.ApiClient;
 import com.example.superheroapp.ApiService;
@@ -26,7 +29,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SuperheroAdapter extends ArrayAdapter<Superhero> {
-
     private Context context;
     private int resource;
 
@@ -52,6 +54,7 @@ public class SuperheroAdapter extends ArrayAdapter<Superhero> {
             TextView brandTextView = convertView.findViewById(R.id.superheroBrandTextView);
             TextView ageTextView = convertView.findViewById(R.id.superheroAgeTextView);
 
+            Button editButton = convertView.findViewById(R.id.buttonEdit);
             Button deleteButton = convertView.findViewById(R.id.buttonDelete);
 
             nameTextView.setText(superhero.getName());
@@ -59,12 +62,19 @@ public class SuperheroAdapter extends ArrayAdapter<Superhero> {
             brandTextView.setText("Brand: " + superhero.getBrand());
             ageTextView.setText("Age: " + superhero.getAge());
 
+            // Set up the edit button click listener
+            editButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    showEditDialog(superhero);
+                }
+            });
+
             // Set up the delete button click listener
             deleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    // Handle delete button click
-                    deleteSuperhero(superhero.getId());
+                    removeSuperhero(superhero.getId());
                 }
             });
         }
@@ -72,23 +82,65 @@ public class SuperheroAdapter extends ArrayAdapter<Superhero> {
         return convertView;
     }
 
-    private void deleteSuperhero(int superheroId) {
-        // Implement the API call to delete the superhero with the given ID
+    private void showEditDialog(Superhero superhero) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Edit Superhero");
+
+        View viewInflated = LayoutInflater.from(context).inflate(R.layout.dialog_edit_superhero, null);
+        builder.setView(viewInflated);
+
+        EditText editName = viewInflated.findViewById(R.id.editTextEditName);
+        EditText editBrand = viewInflated.findViewById(R.id.editTextEditBrand);
+        EditText editAge = viewInflated.findViewById(R.id.editTextEditAge);
+        EditText editSecretIdentity = viewInflated.findViewById(R.id.editTextEditSecretIdentity);
+
+        // Set initial values in the dialog
+        editName.setText(superhero.getName());
+        editBrand.setText(superhero.getBrand());
+        editAge.setText(String.valueOf(superhero.getAge()));
+        editSecretIdentity.setText(superhero.getSecretIdentity());
+
+        builder.setPositiveButton("Save Changes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                String editedName = editName.getText().toString();
+                String editedBrand = editBrand.getText().toString();
+                int editedAge = Integer.parseInt(editAge.getText().toString());
+                String editedSecretIdentity = editSecretIdentity.getText().toString();
+
+                superhero.setName(editedName);
+                superhero.setBrand(editedBrand);
+                superhero.setAge(editedAge);
+                superhero.setSecretIdentity(editedSecretIdentity);
+
+                updateSuperhero(superhero);
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+
+        builder.show();
+    }
+
+    private void updateSuperhero(Superhero superhero) {
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
 
-        Call<Void> deleteCall = apiService.deleteSuperhero(superheroId);
+        Call<Void> updateCall = apiService.updateSuperhero(superhero.getId(), superhero);
 
-        deleteCall.enqueue(new Callback<Void>() {
+        updateCall.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
-                    // Handle successful deletion
-                    removeSuperhero(superheroId); // Remove the superhero from the adapter
+                    Log.d("API Response", "Superhero details updated successfully");
+                    notifyDataSetChanged();
                 } else {
-                    // Handle error response
                     Log.e("API Response", "Error: " + response.code() + ", " + response.message());
 
-                    // Log additional details from the response body
                     try {
                         String errorBody = response.errorBody().string();
                         Log.e("API Response", "Error Body: " + errorBody);
@@ -96,24 +148,16 @@ public class SuperheroAdapter extends ArrayAdapter<Superhero> {
                         e.printStackTrace();
                     }
 
-                    // Display a message to the user indicating the error
-                    showToast("Error deleting superhero. Please try again.");
+                    showToast("Error updating superhero details. Please try again.");
                 }
             }
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                // Handle failure
                 Log.e("API Response", "Failed to make API call", t);
-
-                // Display a message to the user indicating the error
-                showToast("Failed to delete superhero. Please check your internet connection and try again.");
+                showToast("Failed to update superhero details. Please check your internet connection and try again.");
             }
         });
-    }
-
-    private void showToast(String message) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 
     // Helper method to remove a superhero from the adapter by ID
@@ -126,5 +170,8 @@ public class SuperheroAdapter extends ArrayAdapter<Superhero> {
                 break;
             }
         }
+    }
+    private void showToast(String message) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 }
